@@ -1,24 +1,26 @@
 #代码发布系统
 #和coding结合，内部关联git下载代码， 然后移动带发布目录， 发布目录和外部目录相关联
-FROM ubuntu:16.04
-RUN sed -i "s/archive\.ubuntu\.com/mirrors\.163\.com/g" /etc/apt/sources.list
+FROM ubuntu:12.04
+#RUN sed -i "s/archive\.ubuntu\.com/mirrors\.163\.com/g" /etc/apt/sources.list
 RUN apt-get update && \
     apt-get -yq install \
         curl \
         apache2 \
-        libapache2-mod-php7.0 \
-        mysql-server \
-        install php7.0-mysql \
+        libapache2-mod-php5 \
+        php5-mysql \
+        php5-gd \
+        php5-curl \
         php-pear \
+        php5-memcache \
         make \
-        wget && \
+        wget \
+        php-apc && \
 
     rm -rf /var/lib/apt/lists/*
 #安装php-taint
 RUN pecl install taint
-RUN echo "extension=taint.so\ntaint.enable=On" > /etc/php7/conf.d/taint.ini
-RUN sudo /etc/init.d/apache2 restart
-RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php7/apache2/php.ini
+RUN echo "extension=taint.so\ntaint.enable=On" > /etc/php5/conf.d/taint.ini
+RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
 #虚拟目录设置， 发布接口放在虚拟目录中
 RUN echo "Alias /publish_api /publish_api \n\
    <Directory /publish_api> \n\
@@ -33,14 +35,14 @@ ADD publish_api /publish_api
 
 #gearman 队列
 RUN apt-get update &&  apt-get -yq  install libboost-all-dev gperf libevent1-dev libcloog-ppl0 && \
-wget https://launchpad.net/gearmand/1.2/1.1.8/+download/gearmand-1.1.8.tar.gz && \ 
+wget https://launchpad.net/gearmand/1.2/1.1.8/+download/gearmand-1.1.8.tar.gz && \
 tar zxvf gearmand-1.1.8.tar.gz  && \
 cd gearmand-1.1.8/ && \
 ./configure && \
 make && \
-make install && \ 
+make install && \
 pecl install gearman
-RUN echo "extension=gearman.so" > /etc/php7/conf.d/gearman.ini
+RUN echo "extension=gearman.so" > /etc/php5/conf.d/gearman.ini
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 #安装phpunit
