@@ -1,17 +1,15 @@
 #代码发布系统
 #和coding结合，内部关联git下载代码， 然后移动带发布目录， 发布目录和外部目录相关联
-FROM ubuntu:12.04
+FROM ubuntu:16.04
 #RUN sed -i "s/archive\.ubuntu\.com/mirrors\.163\.com/g" /etc/apt/sources.list
 RUN apt-get update && \
     apt-get -yq install \
         curl \
         apache2 \
-        libapache2-mod-php7 \
-        php7-mysql \
-        php7-gd \
-        php7-curl \
+        libapache2-mod-php7.0 \
+        mysql-server \
+        install php7.0-mysql \
         php-pear \
-        php7-memcache \
         make \
         wget \
         php-apc && \
@@ -20,6 +18,7 @@ RUN apt-get update && \
 #安装php-taint
 RUN pecl install taint
 RUN echo "extension=taint.so\ntaint.enable=On" > /etc/php7/conf.d/taint.ini
+RUN sudo /etc/init.d/apache2 restart
 RUN sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php7/apache2/php.ini
 #虚拟目录设置， 发布接口放在虚拟目录中
 RUN echo "Alias /publish_api /publish_api \n\
