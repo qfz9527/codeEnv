@@ -11,8 +11,7 @@ RUN apt-get update && \
         install php7.0-mysql \
         php-pear \
         make \
-        wget \
-        apache2-prefork-dev && \
+        wget && \
 
     rm -rf /var/lib/apt/lists/*
 #安装php-taint
