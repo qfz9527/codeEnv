@@ -20,7 +20,8 @@ install()
       fi
      fi
        #clone 代码
-       sudo git clone -b liuguan https://github.com/qfz9527/codeEnv.git /codeEnv
+       #sudo git clone -b liuguan https://github.com/qfz9527/codeEnv.git /codeEnv
+       sudo git clone -b liuguan https://gitee.com/liuguan/codeEnv.git /codeEnv
     fi
     if [ -z $(which docker) ]; then
        echo "install docker ..."
@@ -45,7 +46,8 @@ install()
 
 start()
 {
-    sudo  docker run --name nginx -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock -t jwilder/nginx-proxy
+    #sudo  docker run --name nginx -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock -t jwilder/nginx-proxy
+    sudo  docker run --name nginx -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock -t registry.cn-hangzhou.aliyuncs.com/qfz9527/nginx-proxy
     #fig 的镜像名称不能有大写字母，所以这里指定镜像名称前缀为code
     cd /codeEnv
     #启动codeWatch
