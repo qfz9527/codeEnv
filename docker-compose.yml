@@ -1,5 +1,5 @@
 workspace:
-  build: ./workspace
+  image: registry.cn-hangzhou.aliyuncs.com/qfz9527/code-env:workspace
   ports:
    - "222:22"
   volumes:
@@ -7,20 +7,20 @@ workspace:
   environment:
    - VIRTUAL_HOST=code.env.com
 db:
-  image: tutum/mariadb
+  image: registry.cn-hangzhou.aliyuncs.com/qfz9527/tutum-mariadb
   environment:
    - MARIADB_PASS=123456
   volumes:
    - ./database:/var/lib/mysql
 memcache:
-  image: memcached
+  image: registry.cn-hangzhou.aliyuncs.com/qfz9527/memcached
 socketlog:
-  build: ./socketlog
+  image: registry.cn-hangzhou.aliyuncs.com/qfz9527/code-env:socketlog
   ports:
      - "1229:1229"
      - "1116:1116"
 phpmyadmin:
-  image: tutum/apache-php
+  image: registry.cn-hangzhou.aliyuncs.com/qfz9527/tutum-apache-php
   volumes:
    - ./phpmyadmin:/app
   links:
