@@ -4,7 +4,7 @@ DOMAIN="$2"
 install()
 {
     if [ -z $DOMAIN ]; then
-        echo "useage : codeEnv install i.yourname.com"
+        echo "useage : codeEnv install i.qfz9527.com"
         exit 1 
     fi
     if [ ! -d /codeEnv ]; then
@@ -20,28 +20,22 @@ install()
       fi
      fi
        #clone 代码
-       sudo git clone https://github.com/luofei614/codeEnv.git /codeEnv
+       sudo git clone -b liuguan https://github.com/qfz9527/codeEnv.git /codeEnv
     fi
     if [ -z $(which docker) ]; then
        echo "install docker ..."
        curl -sSL https://get.docker.com | sudo sh
        #启动docker的后台进程
        sudo docker -d &
-       #使用fig需要设置docker的DOCKER_OPTS
-       #  >> 符合不能用root用户修改文件
-       #sudo  echo 'DOCKER_OPTS="-H tcp://127.0.0.1:4243 -H unix:///var/run/docker.sock"' >> /etc/default/docker
-       #sudo sed -i '$s/$/\nDOCKER_OPTS="-H tcp:\/\/127\.0\.0\.1:4243 -H unix:\/\/\/var\/run\/docker.\sock"/' /etc/default/docker
-       #sudo sh -c  "echo 'DOCKER_OPTS=\"-H tcp://127.0.0.1:4243 -H unix:///var/run/docker.sock\"' >> /etc/default/docker"
-       #sudo restart docker
-       #echo "export DOCKER_HOST=tcp://localhost:4243" >> ~/.bashrc
     fi
-    if [ -z $(which fig) ]; then
-       echo "install fig ..."
-       sudo wget -O /usr/local/bin/fig https://github.com/docker/fig/releases/download/1.0.1/fig-`uname -s`-`uname -m`
-       sudo chmod +x /usr/local/bin/fig
+    if [ -z $(which docker-compose) ]; then
+       echo "install docker-compose ..."
+       #sudo wget -O /usr/local/bin/docker-compose https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m`
+       sudo curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+       sudo chmod +x /usr/local/bin/docker-compose
     fi
     #设置域名
-    sudo sed -i  "s/env\.com/$DOMAIN/g" /codeEnv/fig.yml
+    sudo sed -i  "s/env\.com/$DOMAIN/g" /codeEnv/docker-compose.yml
     sudo sed -i  "s/env\.com/$DOMAIN/g" /codeEnv/workspace/www/codersyn.sh
     sudo sh -c "echo $DOMAIN > /codeEnv/domain"
     sudo chmod +x /codeEnv/codeWatch
@@ -56,7 +50,8 @@ start()
     cd /codeEnv
     #启动codeWatch
     sudo nohup ./codeWatch > /dev/null &
-    sudo FIG_PROJECT_NAME=code  fig up -d
+    sudo docker-compose up -d
+    #sudo FIG_PROJECT_NAME=code  fig up -d
 }
 
 stop()
