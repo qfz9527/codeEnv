@@ -12,8 +12,9 @@ RUN apt-get update && \
         php-pear \
         make \
         wget \
+        apache2-prefork-dev \
         php-apc && \
-        
+
     rm -rf /var/lib/apt/lists/*
 #安装php-taint
 RUN pecl install taint
